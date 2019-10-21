@@ -75,6 +75,7 @@ def hello_world():
     entries = Entry.query.all() 
     return render_template('sql_view.html', entry=entries)
 
+'''
 # 実行
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=True)'''
