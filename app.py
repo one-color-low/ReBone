@@ -62,8 +62,8 @@ def Vstudio():
                 room_name = request.args.get('room_name',''), 
                 model_path = None,
                 background_path = None,
-                sound_path = get_path('sound', request.form['sound']), #todo: postで受け取った値に対応
-                vmd_path = get_path('vmd', request.form['vmd']), #todo: postで受け取った値に対応
+                sound_path = get_path('sound', request.form['sound']), 
+                vmd_path = get_path('vmd', request.form['vmd']),
                 subtitle_path = get_path('subtitle', 'sample')) 
             next_url = "http://localhost:5000/Vroom?room_name="+request.args.get('room_name')
             return render_template('show_link_and_QRcode.html', url=next_url)
