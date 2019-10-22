@@ -32,6 +32,5 @@ room_name | model_path | background_path | sound_path | vmd_path |  subtitle_pat
 - それを使い, Three.jsでroomを表示
 
 # todo
-- app.py内のurlを動的に
 - カメラ＆マイク
 - qrコード

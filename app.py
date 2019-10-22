@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, url_for
 import os
 from flask_sqlalchemy import SQLAlchemy
  
@@ -46,7 +46,7 @@ def createroom():
                 model_path = get_path('model', request.form["model"]),
                 background_path = get_path('background', request.form["background"]),
                 sound_path = "", vmd_path = "", subtitle_path = "") 
-            next_url = "http://localhost:5000/Vstudio?room_name="+request.form["room_name"]
+            next_url = url_for('Vstudio', room_name=request.form["room_name"])
             return render_template('show_link_and_QRcode.html', url=next_url)
         else:
             return render_template('createroom.html', pre_val=request.form, message="このルーム名は既に使われています。")
@@ -55,6 +55,7 @@ def createroom():
 
 
 @app.route('/Vstudio', methods=['POST', 'GET'])
+
 def Vstudio():
     if is_exist(request.args.get('room_name','')):
         if request.method == 'POST':
@@ -65,7 +66,7 @@ def Vstudio():
                 sound_path = get_path('sound', request.form['sound']), 
                 vmd_path = get_path('vmd', request.form['vmd']),
                 subtitle_path = get_path('subtitle', 'sample')) 
-            next_url = "http://localhost:5000/Vroom?room_name="+request.args.get('room_name')
+            next_url = url_for('Vroom',room_name=request.args.get('room_name'))
             return render_template('show_link_and_QRcode.html', url=next_url)
         else: 
             return render_template('Vstudio.html')
