@@ -2,17 +2,13 @@
 アバターをブラウザで表示
 
 # DB
-room_id int | room_name varchar(10) | model_path varchar(20) | background_path varchar(20) | sound_path varchar(20) | vmd_path varchar(20) |  subtitle_path varchar(20)
-
-idのみint, 他varchar
-
 ```
-create table room_info(room_id int, room_name varchar(10), model_path varchar(20), background_path varchar(20), sound_path varchar(20), vmd_path varchar(20), subtitle_path varchar(20) );
+room_name | model_path | background_path | sound_path | vmd_path |  subtitle_path
 ```
-
-```
-insert into room_info values (1, 'sample_room', 'path/to/model/', 'path/to/bg/', 'path/to/sound/', 'path/to/vmd', 'path/to/subtitle');
-```
+- プライマリキーは`room_name`
+    - その関係上、`room_name`は日本語を含まないほうが望ましい
+- すべてString
+- `app.py`の`Entry`クラスで定義しているのでそちらも参照
 
 # System
 ## RoomCreate
