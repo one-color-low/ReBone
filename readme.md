@@ -33,4 +33,5 @@ room_name | model_path | background_path | sound_path | vmd_path |  subtitle_pat
 
 # todo
 - カメラ＆マイク
+    - 変換後のvmdを保存しておくためのストレージ
 - qrコード

@@ -25,6 +25,68 @@
         <p><input type="submit" name="save" value="送信" /></p>
     </form>
 
+    <video id="video" width="640" height="480" autoplay></video>
+    <video id="result_video" width="640" height="480" autoplay></video>
+    <button id="record_btn">Record</button>
+    <div id="result"></div>
+
+    <script>
+
+        var video = document.getElementById("video");
+        var result_video = document.getElementById("result_video");
+        var record_btn = document.getElementById("record_btn");
+        var media = navigator.mediaDevices.getUserMedia({
+            video: true,
+            audio: true,
+        });
+
+
+        //リアルタイムに再生（ストリーミング）させるためにビデオタグに流し込む
+        media.then((stream) => {
+            video.srcObject = stream;
+
+            // さらにstreamをmp4で保存
+            recorder = new MediaRecorder(stream)
+
+            var chunks = []
+            recorder.addEventListener('dataavailable', (e) => {
+                chunks.push(e.data);
+            });
+
+            record_btn.onclick = function () {
+                recorder.start()
+                record_btn.disabled = true
+
+                setTimeout("recorder.stop()", 7000)
+
+            }
+
+            recorder.onstop = function (e) {
+                var blob = new Blob(chunks, { type: 'video/mp4' });
+                result_video.src = window.URL.createObjectURL(blob);
+                result_video.play();
+
+                // Ajaxでblobを送信
+                var xhr = new XMLHttpRequest();
+                xhr.onreadystatechange = function () {
+                    var result = document.getElementById('result');
+                    if (xhr.readyState == 4) { // 通信の完了時
+                        if (xhr.status == 200) { // 通信の成功時
+                            result.innerHTML = xhr.responseText;
+                        }
+                    } else {
+                        result.innerHTML = "通信中...";
+                    }
+                }
+                xhr.open('GET', '/makevmd', true);
+                xhr.send(blob);
+
+            }
+        });
+
+
+    </script>
+
 </body>
 
-</html>
+</html>==
