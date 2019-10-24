@@ -101,8 +101,8 @@ def runanime():
  
 
 # データベース
-#db_uri = os.environ.get('DATABASE_URL') or "postgresql://localhost/flaskvtube"
-db_uri = "sqlite:///" + os.path.join(app.root_path, 'flaskvtube.db') # 追加
+db_uri = os.environ.get('DATABASE_URL') or "postgresql://localhost/flaskvtube"
+#db_uri = "sqlite:///" + os.path.join(app.root_path, 'flaskvtube.db') # 追加
 app.config['SQLALCHEMY_DATABASE_URI'] = db_uri
 db = SQLAlchemy(app) 
 
@@ -146,9 +146,9 @@ def update_entry(room_name, model_path, background_path, sound_path, vmd_path, s
     db.session.commit()
     return 0
 
-
+'''
 # 実行
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=True)'''
 
 # ※entry=一連の処理
