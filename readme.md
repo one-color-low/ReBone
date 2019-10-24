@@ -33,5 +33,11 @@ room_name | model_path | background_path | sound_path | vmd_path |  subtitle_pat
 
 # todo
 - カメラ＆マイク
-    - 変換後のvmdを保存しておくためのストレージ
+    - blobの送信は完了
+    - マイクとカメラを分ける -> MediaStream.getAudioTracksでok -> ダメっぽい。どっかの段階で切り分けれないかなー
+    - mp3に変換するには？-> readAsDataURLを使えばblob→Base64に変換できる
+- 背景
+- mmd選択画面のajax
 - qrコード
+- 編集画面のパスコード
+- vmd直接アップロード
