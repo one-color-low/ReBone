@@ -1,5 +1,5 @@
 # Description
-アバターをブラウザで表示
+簡単に3Dモデルに生まれ変われるアプリ「ReBorn」のフレームワーク部分
 
 # DB
 ```
@@ -11,7 +11,8 @@ room_name | model_path | background_path | sound_path | vmd_path |  subtitle_pat
 - `app.py`の`Entry`クラスで定義しているのでそちらも参照
 
 # System
-## RoomCreate
+## ルート
+- ルームを作るページ
 - room_nameなどを入力
 - room_nameが使用可能か判定
 - DBに保存
