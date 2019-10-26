@@ -36,7 +36,7 @@
         var result_video = document.getElementById("result_video")
         var record_btn = document.getElementById("record_btn")
         var media = navigator.mediaDevices.getUserMedia({
-            video: true,
+            video: { width: 128, height: 72 },
             audio: true,
         })
 

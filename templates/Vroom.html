@@ -30,6 +30,13 @@
 
         var clock = new THREE.Clock();
 
+        var backgroundFile = '../' + '{{ background_path }}';
+        var modelFile = '../' + '{{ model_path }}';
+        var vmdFiles = ['../' + '{{ vmd_path }}'];
+        // var vmdFiles = '../static/vmds/test.vmd'; // liftingのサンプル
+        var audioFile = '../' + '{{ sound_path }}';
+        var audioParams = { delayTime: 160 * 1 / 30 };
+
         Ammo().then(function (AmmoLib) {
 
             Ammo = AmmoLib;
@@ -57,12 +64,29 @@
             gridHelper.position.y = - 10;
             scene.add(gridHelper);
 
-            var ambient = new THREE.AmbientLight(0x666666);
+            var ambient = new THREE.AmbientLight(0x666666, 1.5);
             scene.add(ambient);
 
-            var directionalLight = new THREE.DirectionalLight(0x887766);
+            var directionalLight = new THREE.DirectionalLight(0x887766, 1);
             directionalLight.position.set(- 1, 1, 1).normalize();
             scene.add(directionalLight);
+
+            // 背景画像を読み込む
+            const textureLoader = new THREE.TextureLoader();
+            const texture = textureLoader.load(backgroundFile);
+
+            // 反射の強いマテリアルにする
+            const material = new THREE.MeshPhongMaterial({
+                map: texture
+            });
+            const geometry = new THREE.BoxGeometry(100, 80, 1)
+            // 背景メッシュを作成
+            const background_mesh = new THREE.Mesh(geometry, material);
+            background_mesh.position.z = -15
+            background_mesh.position.y = +10
+            // 3D空間に背景メッシュを追加
+            scene.add(background_mesh);
+
 
             //
 
@@ -92,13 +116,6 @@
             }
 
 
-            var modelFile = '../' + '{{ model_path }}';
-            //var vmdFiles = ['../' + '{{ vmd_path }}'];
-            var vmdFiles = '../static/vmds/test.vmd';
-            var audioFile = '../' + '{{ sound_path }}';
-            var audioParams = { delayTime: 160 * 1 / 30 };
-    
-
             helper = new MMDAnimationHelper({
                 afterglow: 2.0
             });
@@ -106,15 +123,14 @@
             var loader = new MMDLoader();
 
             new THREE.AudioLoader().load(audioFile, function (buffer) {
-                    var listener = new THREE.AudioListener();
-                    var audio = new THREE.Audio(listener).setBuffer(buffer);
-                    listener.position.z = 1;
-                    helper.add(audio, audioParams);
-                    scene.add(audio);
-                    scene.add(listener);
-                    scene.add(mesh);
-                    ready = true;
-                }, onProgress, null);
+                var listener = new THREE.AudioListener();
+                var audio = new THREE.Audio(listener).setBuffer(buffer);
+                listener.position.z = 1;
+                helper.add(audio, audioParams);
+                scene.add(audio);
+                scene.add(listener);
+                ready = true;
+            }, onProgress, null);
 
             loader.loadWithAnimation(modelFile, vmdFiles, function (mmd) {
 

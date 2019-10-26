@@ -3,6 +3,7 @@ import os
 from flask_sqlalchemy import SQLAlchemy
 import ffmpeg
 import time
+from moviepy.editor import *
  
 app = Flask(__name__)
 
@@ -112,6 +113,9 @@ def makevmd():
             .output('./uploads/audio.wav', acodec='pcm_s16le')
             .run(overwrite_output=True)
         )
+
+        clip = VideoFileClip('./uploads/video.mp4')
+        clip.write_videofile('./uploads/video_30fps.mp4', fps=30)
 
 
     return "ok" # todo: 画像処理と結合してvmdを返すように

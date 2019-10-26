@@ -38,8 +38,9 @@ room_name | model_path | background_path | sound_path | vmd_path |  subtitle_pat
 
 # todo
 - カメラ＆マイクからmp4出力 -> Done!!
-- mp4からwav抽出
-- 背景
+- mp4からwav抽出 -> Done!!
+    - blobから直接変換するのはライブラリの仕様的に無理っぽい
+- 背景 -> Done!!
 - mmd選択画面のajax
 - qrコード
 - 編集画面のパスコード
