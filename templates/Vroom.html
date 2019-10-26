@@ -32,9 +32,11 @@
 
         var backgroundFile = '../' + '{{ background_path }}';
         var modelFile = '../' + '{{ model_path }}';
-        var vmdFiles = ['../' + '{{ vmd_path }}'];
-        // var vmdFiles = '../static/vmds/test.vmd'; // liftingのサンプル
+        //var vmdFiles = ['../' + '{{ vmd_path }}'];
+        var vmdFiles = '../static/vmds/test.vmd'; // liftingのサンプル
         var audioFile = '../' + '{{ sound_path }}';
+        console.log(audioFile)
+        var voiceFile = '../' + '{{ voice_path }}' ;
         var audioParams = { delayTime: 160 * 1 / 30 };
 
         Ammo().then(function (AmmoLib) {
@@ -122,12 +124,12 @@
 
             var loader = new MMDLoader();
 
-            new THREE.AudioLoader().load(audioFile, function (buffer) {
+            new THREE.AudioLoader().load(voiceFile, function (buffer) {
                 var listener = new THREE.AudioListener();
-                var audio = new THREE.Audio(listener).setBuffer(buffer);
+                var voice = new THREE.Audio(listener).setBuffer(buffer);
                 listener.position.z = 1;
-                helper.add(audio, audioParams);
-                scene.add(audio);
+                helper.add(voice, audioParams);
+                scene.add(voice);
                 scene.add(listener);
                 ready = true;
             }, onProgress, null);

@@ -50,7 +50,7 @@ def createroom():
                 room_name = request.form["room_name"], 
                 model_path = get_path('model', request.form["model"]),
                 background_path = get_path('background', request.form["background"]),
-                sound_path = "", vmd_path = "", subtitle_path = "") 
+                sound_path = "", vmd_path = "", subtitle_path = "", voice_path = "") 
             next_url = url_for('Vstudio', room_name=request.form["room_name"])
             return render_template('show_link_and_QRcode.html', url=next_url)
         else:
@@ -69,7 +69,8 @@ def Vstudio():
                 background_path = None,
                 sound_path = get_path('sound', request.form['sound']), 
                 vmd_path = get_path('vmd', request.form['vmd']),
-                subtitle_path = get_path('subtitle', 'sample')) 
+                subtitle_path = get_path('subtitle', 'sample'),
+                voice_path = None ) 
             next_url = url_for('Vroom',room_name=request.args.get('room_name'))
             return render_template('show_link_and_QRcode.html', url=next_url)
         else: 
@@ -87,36 +88,68 @@ def Vroom():
             background_path = entry.background_path,
             sound_path = entry.sound_path,
             vmd_path = entry.vmd_path,
-            subtitle_path = entry.subtitle_path )
+            subtitle_path = entry.subtitle_path,
+            voice_path = entry.voice_path )
     else:
         room_list = get_list_from_db()
         return render_template('list.html', room_list=room_list)
 
 
 @app.route('/makevmd', methods=['POST', 'GET'])
-def makevmd():
+def makevmd():  # todo: できれば名前変えたい(音声変換もするので)
     if request.method == 'POST':
         video_file = request.files['video_blob']
         video_file.save(os.path.join(app.config['UPLOAD_FOLDER'], 'video.webm'))
-        time.sleep(1)   # 保存処理に少し時間がかかるので待つ
+        time.sleep(1)   # 保存処理に時間がかかるので少し待つ
+
+        # パスを設定
+        webm_path = './uploads/video.webm'
+        mp4_path = './uploads/video.mp4'
+        wav_path = './uploads/audio.wav'
+        fps30_mp4_path = './uploads/video_30fps.mp4'
  
+        # webm -> mp4 ＆ wavに変換して保存
         (
             ffmpeg
-            .input('./uploads/video.webm')
-            .output('./uploads/video.mp4', vcodec='h264')
+            .input(webm_path)
+            .output(mp4_path, vcodec='h264')
             .run(overwrite_output=True)
         )
 
         (
             ffmpeg
-            .input('./uploads/video.webm')
-            .output('./uploads/audio.wav', acodec='pcm_s16le')
+            .input(webm_path)
+            .output(wav_path, acodec='pcm_s16le')
             .run(overwrite_output=True)
         )
 
-        clip = VideoFileClip('./uploads/video.mp4')
-        clip.write_videofile('./uploads/video_30fps.mp4', fps=30)
+        # mp4をfps30にして保存
+        clip = VideoFileClip(mp4_path)
+        clip.write_videofile(fps30_mp4_path, fps=30)
 
+
+        # todo: ここで変換処理を呼び出す
+
+        ## 音声変換
+        ### input: wav_path, output: processed_wav_path
+        processed_wav_path2 = 'uploads/green.mp3'
+
+        ## 動画変換
+        ### input: fps30_mp4_path, output: vmd_path
+        vmd_path_2 = '/unko'
+
+
+        # 音声変換処理で返ってきたパス(processed_wav_path)と
+        # 動画変換処理で返ってきたパス(vmd_path)をdbに保存
+        update_entry(
+            room_name = request.args.get('room_name'),
+            model_path = None,
+            background_path = None,
+            sound_path = None,
+            vmd_path = None,
+            subtitle_path = None,
+            voice_path = processed_wav_path2
+        )
 
     return "ok" # todo: 画像処理と結合してvmdを返すように
 
@@ -132,16 +165,17 @@ app.config['SQLALCHEMY_DATABASE_URI'] = db_uri
 db = SQLAlchemy(app) 
 
 class Entry(db.Model): 
-    __tablename__ = "rooms2" 
+    __tablename__ = "rooms4" 
     room_name = db.Column(db.String(), primary_key=True) 
     model_path = db.Column(db.String(), nullable=False) 
     background_path = db.Column(db.String(), nullable=False) 
     sound_path = db.Column(db.String(), nullable=False) 
     vmd_path = db.Column(db.String(), nullable=False) 
-    subtitle_path = db.Column(db.String(), nullable=False) 
+    subtitle_path = db.Column(db.String(), nullable=False)
+    voice_path = db.Column(db.String(), nullable=False) 
 
 
-def add_entry(room_name, model_path, background_path, sound_path, vmd_path, subtitle_path):
+def add_entry(room_name, model_path, background_path, sound_path, vmd_path, subtitle_path, voice_path):
     entry = Entry()
     entry.room_name = room_name
     entry.model_path = model_path
@@ -149,13 +183,15 @@ def add_entry(room_name, model_path, background_path, sound_path, vmd_path, subt
     entry.sound_path = sound_path
     entry.vmd_path = vmd_path
     entry.subtitle_path = subtitle_path
+    entry.voice_path = voice_path
 
     db.session.add(entry)
     db.session.commit()
     return 0
 
-def update_entry(room_name, model_path, background_path, sound_path, vmd_path, subtitle_path):
+def update_entry(room_name, model_path, background_path, sound_path, vmd_path, subtitle_path, voice_path):
     entry = Entry().query.filter(Entry.room_name == room_name).first()
+    print(entry.background_path)
     if model_path != None:
         entry.model_path = model_path
     if background_path != None:
@@ -166,6 +202,8 @@ def update_entry(room_name, model_path, background_path, sound_path, vmd_path, s
         entry.vmd_path = vmd_path
     if subtitle_path != None:
         entry.subtitle_path = subtitle_path
+    if voice_path != None:
+        entry.voice_path = voice_path   # entryがNone
 
     db.session.add(entry)
     db.session.commit()

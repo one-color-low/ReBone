@@ -41,7 +41,17 @@ room_name | model_path | background_path | sound_path | vmd_path |  subtitle_pat
 - mp4からwav抽出 -> Done!!
     - blobから直接変換するのはライブラリの仕様的に無理っぽい
 - 背景 -> Done!!
-- mmd選択画面のajax
+- 変換後音声(ダミー)をdbに登録して、roomで表示できるように
+    - app.py->vmdmake: 
+        - 変換後の音声を特定のディレクトリに保存して、ダミーの音声を返す関数
+        - dbにアクセスして、変換後の音声pathを保存 
+    - Vstudio.html: 
+        - vmd選択を外す(コメントアウト)
+    - Vroom.html:
+        - BGMの他、音声(voice)も受け取る
+        - voiceも同時にsceneにadd(両方無理そうなら)
+        - できれば音声と動画に再生
+- mmd選択画面のajax 
 - qrコード
 - 編集画面のパスコード
 - vmd直接アップロード
