@@ -63,6 +63,7 @@ def createroom():
 def Vstudio():
     if is_exist(request.args.get('room_name','')):
         if request.method == 'POST':
+            print(get_path('sound', request.form['sound']))
             update_entry(
                 room_name = request.args.get('room_name',''), 
                 model_path = None,
@@ -132,7 +133,7 @@ def makevmd():  # todo: できれば名前変えたい(音声変換もするの�
 
         ## 音声変換
         ### input: wav_path, output: processed_wav_path
-        processed_wav_path = 'uploads/green.mp3'
+        processed_wav_path = 'static/voices/audio.wav'
 
         ## 動画変換
         ### input: fps30_mp4_path, output: vmd_path
