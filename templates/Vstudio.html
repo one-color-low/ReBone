@@ -63,17 +63,18 @@
                 recorder.start()
                 record_btn.disabled = true
 
-                setTimeout("recorder.stop()", 10000)
+                setTimeout("recorder.stop()", 3000)
 
             }
 
             recorder.onstop = function (e) {
-                var blob = new Blob(chunks, { type: 'video/mp4' })
-                result_video.src = window.URL.createObjectURL(blob)
+                var video_blob = new Blob(chunks, { type: 'video/webm' })
+
+                result_video.src = window.URL.createObjectURL(video_blob)
                 result_video.play()
 
                 var formData = new FormData()
-                formData.append('blob', blob, 'video.mp4')
+                formData.append('video_blob', video_blob, 'video.webm')
 
                 // Ajaxでblobを送信
                 var xhr = new XMLHttpRequest()

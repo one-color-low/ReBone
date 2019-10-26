@@ -1,6 +1,10 @@
 # Description
 簡単に3Dモデルに生まれ変われるアプリ「ReBorn」のフレームワーク部分
 
+# Requirement
+- ffmpeg
+- 
+
 # DB
 ```
 room_name | model_path | background_path | sound_path | vmd_path |  subtitle_path
@@ -33,13 +37,12 @@ room_name | model_path | background_path | sound_path | vmd_path |  subtitle_pat
 - それを使い, Three.jsでroomを表示
 
 # todo
-- カメラ＆マイク
-    - blobの送信は完了
-    - マイクとカメラを分ける -> MediaStream.getAudioTracksでok -> ダメっぽい。どっかの段階で切り分けれないかなー
-    - mp3に変換するには？-> readAsDataURLを使えばblob→Base64に変換できる
+- カメラ＆マイクからmp4出力 -> Done!!
+- mp4からwav抽出
 - 背景
 - mmd選択画面のajax
 - qrコード
 - 編集画面のパスコード
 - vmd直接アップロード
+- 動画アップロード
 - デプロイ

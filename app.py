@@ -1,6 +1,8 @@
 from flask import Flask, render_template, request, url_for
 import os
 from flask_sqlalchemy import SQLAlchemy
+import ffmpeg
+import time
  
 app = Flask(__name__)
 
@@ -93,10 +95,26 @@ def Vroom():
 @app.route('/makevmd', methods=['POST', 'GET'])
 def makevmd():
     if request.method == 'POST':
-        file = request.files['blob']
-        print(file)
-        file.save(os.path.join(app.config['UPLOAD_FOLDER'], 'video.mp4'))
-    return "ok"
+        video_file = request.files['video_blob']
+        video_file.save(os.path.join(app.config['UPLOAD_FOLDER'], 'video.webm'))
+        time.sleep(1)   # 保存処理に少し時間がかかるので待つ
+ 
+        (
+            ffmpeg
+            .input('./uploads/video.webm')
+            .output('./uploads/video.mp4', vcodec='h264')
+            .run(overwrite_output=True)
+        )
+
+        (
+            ffmpeg
+            .input('./uploads/video.webm')
+            .output('./uploads/audio.wav', acodec='pcm_s16le')
+            .run(overwrite_output=True)
+        )
+
+
+    return "ok" # todo: 画像処理と結合してvmdを返すように
 
 @app.route('/runanime')
 def runanime():
@@ -104,8 +122,8 @@ def runanime():
  
 
 # データベース
-db_uri = os.environ.get('DATABASE_URL') or "postgresql://localhost/flaskvtube"
-#db_uri = "sqlite:///" + os.path.join(app.root_path, 'flaskvtube.db') # 追加
+#db_uri = os.environ.get('DATABASE_URL') or "postgresql://localhost/flaskvtube"
+db_uri = "sqlite:///" + os.path.join(app.root_path, 'flaskvtube.db') # 追加
 app.config['SQLALCHEMY_DATABASE_URI'] = db_uri
 db = SQLAlchemy(app) 
 
@@ -149,9 +167,9 @@ def update_entry(room_name, model_path, background_path, sound_path, vmd_path, s
     db.session.commit()
     return 0
 
-'''
+
 # 実行
 if __name__ == "__main__":
-    app.run(debug=True)'''
+    app.run(debug=True)
 
 # ※entry=一連の処理
