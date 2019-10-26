@@ -43,10 +43,16 @@
 
         //リアルタイムに再生（ストリーミング）させるためにビデオタグに流し込む
         media.then((stream) => {
-            video.srcObject = stream
 
-            // さらにstreamをmp4で保存
-            recorder = new MediaRecorder(stream)
+            video.srcObject = stream;
+
+            var options = {
+                videoBitsPerSecond: 512000, // 512kbits / sec
+                mimeType: 'video/webm; codecs=vp9'
+            }
+
+            // さらにstreamをwebmで保存
+            recorder = new MediaRecorder(stream, options)
 
             var chunks = []
             recorder.addEventListener('dataavailable', (e) => {
@@ -57,7 +63,7 @@
                 recorder.start()
                 record_btn.disabled = true
 
-                setTimeout("recorder.stop()", 7000)
+                setTimeout("recorder.stop()", 10000)
 
             }
 
@@ -67,8 +73,7 @@
                 result_video.play()
 
                 var formData = new FormData()
-                formData.append('type', "recordedVideo")
-                formData.append('blob', blob)
+                formData.append('blob', blob, 'video.mp4')
 
                 // Ajaxでblobを送信
                 var xhr = new XMLHttpRequest()
@@ -83,4 +88,4 @@
 
 </body>
 
-</html>==
+</html>

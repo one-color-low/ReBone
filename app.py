@@ -4,6 +4,8 @@ from flask_sqlalchemy import SQLAlchemy
  
 app = Flask(__name__)
 
+app.config['UPLOAD_FOLDER'] = './uploads'
+
 # ツール
 
 def get_path(type, name):
@@ -55,7 +57,6 @@ def createroom():
 
 
 @app.route('/Vstudio', methods=['POST', 'GET'])
-
 def Vstudio():
     if is_exist(request.args.get('room_name','')):
         if request.method == 'POST':
@@ -92,7 +93,9 @@ def Vroom():
 @app.route('/makevmd', methods=['POST', 'GET'])
 def makevmd():
     if request.method == 'POST':
-        print(request.files['blob'])
+        file = request.files['blob']
+        print(file)
+        file.save(os.path.join(app.config['UPLOAD_FOLDER'], 'video.mp4'))
     return "ok"
 
 @app.route('/runanime')

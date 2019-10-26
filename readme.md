@@ -42,3 +42,4 @@ room_name | model_path | background_path | sound_path | vmd_path |  subtitle_pat
 - qrコード
 - 編集画面のパスコード
 - vmd直接アップロード
+- デプロイ

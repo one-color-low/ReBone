@@ -93,7 +93,8 @@
 
 
             var modelFile = '../' + '{{ model_path }}';
-            var vmdFiles = ['../' + '{{ vmd_path }}'];
+            //var vmdFiles = ['../' + '{{ vmd_path }}'];
+            var vmdFiles = '../static/vmds/test.vmd';
             var audioFile = '../' + '{{ sound_path }}';
             var audioParams = { delayTime: 160 * 1 / 30 };
     
@@ -123,7 +124,7 @@
 
                 helper.add(mesh, {
                     animation: mmd.animation,
-                    physics: true
+                    physics: false
                 });
 
                 ikHelper = helper.objects.get(mesh).ikSolver.createHelper();
