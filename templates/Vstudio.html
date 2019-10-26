@@ -80,7 +80,7 @@
 
                 // Ajaxでblobを送信
                 var xhr = new XMLHttpRequest()
-                xhr.open('POST', '/makevmd')
+                xhr.open('POST', '/makevmd?room_name='+'{{ room_name }}')
                 xhr.send(formData)
 
             }

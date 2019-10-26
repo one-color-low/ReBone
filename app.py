@@ -74,7 +74,7 @@ def Vstudio():
             next_url = url_for('Vroom',room_name=request.args.get('room_name'))
             return render_template('show_link_and_QRcode.html', url=next_url)
         else: 
-            return render_template('Vstudio.html')
+            return render_template('Vstudio.html', room_name=request.args.get('room_name',''))
     else: 
         return render_template('not_found.html', message="ルームが指定されていないか、指定のルームが見つかりません。")
     
@@ -132,23 +132,23 @@ def makevmd():  # todo: できれば名前変えたい(音声変換もするの�
 
         ## 音声変換
         ### input: wav_path, output: processed_wav_path
-        processed_wav_path2 = 'uploads/green.mp3'
+        processed_wav_path = 'uploads/green.mp3'
 
         ## 動画変換
         ### input: fps30_mp4_path, output: vmd_path
-        vmd_path_2 = '/unko'
+        vmd_path = '/unko'
 
 
         # 音声変換処理で返ってきたパス(processed_wav_path)と
         # 動画変換処理で返ってきたパス(vmd_path)をdbに保存
         update_entry(
-            room_name = request.args.get('room_name'),
+            room_name = request.args.get('room_name',''),
             model_path = None,
             background_path = None,
             sound_path = None,
-            vmd_path = None,
+            vmd_path = vmd_path,
             subtitle_path = None,
-            voice_path = processed_wav_path2
+            voice_path = processed_wav_path
         )
 
     return "ok" # todo: 画像処理と結合してvmdを返すように
@@ -191,7 +191,6 @@ def add_entry(room_name, model_path, background_path, sound_path, vmd_path, subt
 
 def update_entry(room_name, model_path, background_path, sound_path, vmd_path, subtitle_path, voice_path):
     entry = Entry().query.filter(Entry.room_name == room_name).first()
-    print(entry.background_path)
     if model_path != None:
         entry.model_path = model_path
     if background_path != None:
